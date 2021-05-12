@@ -1,0 +1,337 @@
+<MainWindow>:
+    controllers_list: controllers_list
+    canvas.before:
+        Color:
+            rgb: 62/255,  70/255,  73/255
+        Rectangle:
+            size: self.width, self.height
+
+    GridLayout:
+        cols: 1
+        size: root.width, root.height
+        rows_minimum: {0:root.height*0.6/4 ,1:root.height*3.4/4}
+
+        GridLayout:
+            cols: 5
+            padding: [36.5, 20, 0, 0]
+
+            canvas.before:
+                Color:
+                    rgb: 46/255,  47/255,  49/255
+                RoundedRectangle:
+                    size: self.width - 70, self.height - 20
+                    pos: self.x + 36.5, self.y
+
+            FlatButton:
+                text: "Scan"
+                radius: [5, 0, 0, 5]
+                on_release:
+                    if root.scanner_active: root.a.send("stop"); \
+                    self.background_color = [35/255,  169/255,  110/255]; \
+                    root.scanner_active = False; \
+                    self.stop();
+                    else: root.scan(); \
+                    self.background_color = [33/255,  147/255,  95/255]; \
+                    self.move();
+
+            FlatButton:
+                text: "Spoof all"
+                on_release: for c in controllers_list.children: c.children[2].only_on()
+
+            FlatButton:
+                text: "Reload\nFilter List"
+                halign: "center"
+                on_press: root.load_filter_list()
+
+            Widget:
+                size_hint_x: None
+                width: 350
+
+            GridLayout:
+                cols: 2
+                size_hint: None, 1
+                width: 150
+
+                FlatLabel:
+                    text: root.my_ip
+                    width: 150
+                    radius: [5, 0, 0, 0]
+
+                FlatLabel:
+                    text: root.gateway_ip
+                    width: 150
+                    radius: [0, 5, 0, 0]
+
+                FlatLabel:
+                    text: root.my_mac
+                    width: 150
+                    radius: [0, 0, 0, 5]
+
+                FlatLabel:
+                    text: root.gateway_mac
+                    width: 150
+                    radius: [0, 0, 5, 0]
+
+        GridLayout:
+            cols: 1
+            padding: [36.5, 20, 0, 0]
+            rows_minimum: {0:53, 1:275}
+
+            TableBar:
+
+            ScrollView:
+                do_scroll_x: False
+                size_hint_x: None
+                bar_width: '10dp'
+                width: 950
+
+                canvas.before:
+                    Color:
+                        rgb: 46/255,  47/255,  49/255
+                    RoundedRectangle:
+                        size: self.width, self.height - 25
+                        pos: self.x, self.y + 28
+                        radius: [0, 0, 5, 5]
+
+                GridLayout:
+                    id: controllers_list
+                    cols: 1
+                    size_hint_y: None
+                    height: 575
+
+
+<-FlatButton>:
+    size_hint_x: None
+    width: 100
+    font_name: "Lato-Black.ttf"
+    background_color: [33/255,  147/255,  95/255] if self.state == "down" else [35/255,  169/255,  110/255]
+
+    canvas:
+        ###Border###
+        Color:
+            rgb: 54/255,  98/255,  83/255
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.radius
+
+        ###Background###
+        Color:
+            rgb: self.background_color
+        RoundedRectangle:
+            size: self.width - 2, self.height - 2
+            pos: self.x + 1, self.y + 1
+            radius: self.radius
+
+        ###Text###
+        Color:
+            rgb: 195/255,  220/255,  206/255
+        Rectangle:
+            texture: self.texture
+            size: self.texture_size
+            pos: int(self.center_x - self.texture_size[0] / 2.), int(self.center_y - self.texture_size[1] / 2.)
+
+<-FlatLabel>:
+    size_hint_x: None
+    width: 100
+    font_name: "Lato-Black.ttf"
+    background_color: [44/255,  56/255,  54/255]
+
+    canvas:
+        ###Border###
+        Color:
+            rgb: 54/255,  98/255,  83/255
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.radius
+
+        ###Background###
+        Color:
+            rgb: self.background_color
+        RoundedRectangle:
+            size: self.width - 2, self.height - 2
+            pos: self.x + 1, self.y + 1
+            radius: self.radius
+
+        ###Text###
+        Color:
+            rgb: 36/255,  158/255,  104/255
+        Rectangle:
+            texture: self.texture
+            size: self.texture_size
+            pos: int(self.center_x - self.texture_size[0] / 2.), int(self.center_y - self.texture_size[1] / 2.)
+
+<-FlatTextInput>
+    size_hint_x: None
+    width: 100
+    font_name: "Lato-Black.ttf"
+    cursor_color: [36/255,  158/255,  104/255, 1]
+    foreground_color: [36/255,  158/255,  104/255, 1]
+    halign: "center"
+    multiline: False
+
+    canvas.before:
+
+        Color:
+            rgb: 54/255,  98/255,  83/255
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgb: 44/255,  56/255,  54/255
+        Rectangle:
+            size: self.width - 2, self.height - 2
+            pos: self.x + 1, self.y + 1
+
+        Color:
+            rgba: (self.cursor_color if self.focus and not self._cursor_blink else (0, 0, 0, 0))
+        Rectangle:
+            pos: [int(x) for x in self.cursor_pos]
+            size: root.cursor_width, -self.line_height
+
+        Color:
+            rgba: self.disabled_foreground_color if self.disabled else (self.hint_text_color if not self.text else self.foreground_color)
+
+<FlatSwitch>
+    ball_x: self.x + self.width/5 + 5
+
+    canvas:
+
+        ###Border###
+        Color:
+            rgb: 54/255,  98/255,  83/255
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+        ###Background###
+        Color:
+            rgb: 44/255,  56/255,  54/255
+        Rectangle:
+            size: self.width - 2, self.height - 2
+            pos: self.x + 1, self.y + 1
+
+        Color:
+            rgb: self.back if not self.disabled else [213/255, 213/255, 213/255]
+        Rectangle:
+            size: 60, 35
+            pos: self.x + self.width/5, self.y + self.height/5.5
+
+        Color:
+            rgb: [250/255, 250/255, 250/255] if not self.disabled else [189/255, 189/255, 189/255]
+        Rectangle:
+            size: 25, 25
+            pos: self.ball_x, self.y + self.height/5.5 + 5
+
+<TableBar>:
+    cols: 8
+    size_hint_y: None
+    height: 50
+
+    FlatLabel:
+        text: "Name"
+        radius: [5, 0, 0, 0]
+        width: 150
+
+    FlatLabel:
+        text: "MAC"
+        width: 150
+
+    FlatLabel:
+        text: "IP"
+        width: 150
+
+    FlatLabel:
+        text: "Download"
+
+    FlatLabel:
+        text: "Upload"
+
+    FlatLabel:
+        text: "Spoof"
+
+    FlatLabel:
+        text: "Block"
+
+    FlatLabel:
+        text: "Filter"
+        radius: [0, 5, 0, 0]
+
+<HostController>
+    down_meter: down_meter
+    down_limit: down_limit
+    up_meter: up_meter
+    up_limit: up_limit
+
+
+    cols: 8
+    size_hint: None, None
+    height: 60
+    width: 150
+
+    FlatTextInput:
+        text: root.name
+        hint_text:"Device name"
+        width: root.width * 3/19
+        padding_y: [20, 0]
+        on_text_validate: root.save(self.text)
+
+    FlatLabel:
+        text: root.mac
+        width: root.width * 3/19
+
+    FlatLabel:
+        text: root.ip
+        width: root.width * 3/19
+
+    GridLayout:
+        cols: 1
+
+        FlatLabel:
+            id: down_meter
+            text: "0 KB/s"
+
+        FlatTextInput:
+            id: down_limit
+            width: root.width * 2/19
+            hint_text: "Limit"
+            padding_y: [5, 0]
+            on_text_validate: root.hccl.send(["download", self.text])
+
+    GridLayout:
+        cols: 1
+
+        FlatLabel:
+            id: up_meter
+            text: "0 KB/s"
+
+        FlatTextInput:
+            id: up_limit
+            width: root.width * 2/19
+            hint_text: "Limit"
+            padding_y: [5, 0]
+            on_text_validate: root.hccl.send(["upload", self.text])
+
+    FlatSwitch:
+        size_hint_x: None
+        width: root.width * 2/19
+        on_press:
+            if self.active: root.spoof();
+            else: root.un_spoof();
+
+    FlatSwitch:
+        size_hint_x: None
+        width: root.width * 2/19
+        disabled: True
+        on_press:
+            if self.active: root.hccl.send("block");
+            else: root.hccl.send("start");
+
+    FlatSwitch:
+        size_hint_x: None
+        width: root.width * 2/19
+        on_press:
+            if self.active: root.hccl.send("filter");
+            else: root.hccl.send("unfilter");
