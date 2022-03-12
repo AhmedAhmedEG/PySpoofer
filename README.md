@@ -1,6 +1,7 @@
 # PySpoofer
 An open source local network management GUI tool made with python.
-![Screenshot_6](https://user-images.githubusercontent.com/16827679/158036804-3e7a1dc5-d96c-42c6-80a9-feed96e2363e.png)
+![Screenshot_8](https://user-images.githubusercontent.com/16827679/158036874-451f8fad-baed-44a4-835c-5398369739e6.png)
+
 
 # Features
 Auto detection for current network interface.
